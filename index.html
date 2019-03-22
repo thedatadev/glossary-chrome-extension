@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Glossary demo</title>
+</head>
+<body>
+
+        <p><span>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</span> incididunt ut labore et dolore magna aliqua. Congue eu consequat ac felis donec et odio. </p>
+
+    <script>
+
+        
+
+        document.addEventListener("DOMContentLoaded", function() {
+
+            document.addEventListener("mousemove", function(e) {
+                
+                let range;
+                let textNode;
+                let offset;
+
+                // Get the character under the caret
+                if (document.caretRangeFromPoint) {
+                    range = document.caretRangeFromPoint(e.clientX, e.clientY);
+                    textNode = range.startContainer;
+                    offset = range.startOffset;
+                } else {
+                    console.log("caretRangeFromPoint is not supported on your browser");
+                    return;
+                }
+
+                // Scan to the right of the character to discover the rest of the word
+                let endOfWord = 1;
+
+                while (textNode.textContent[offset + endOfWord] != " ") {
+                    endOfWord++;
+                }
+
+                // Print out that word to the console
+                console.log(textNode.textContent.slice(offset, offset + endOfWord));
+
+            });
+
+        });
+
+    </script>
+
+</body>
+</html>
