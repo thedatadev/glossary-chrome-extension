@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>jsFile Parsing Demo</title>
+</head>
+<body>
+    
+    <script>
+        function readJSON(path) {
+            let xhr = new XMLHttpRequest();
+            xhr.open('GET', path, true);
+            xhr.responseType = 'blob';
+            xhr.onload = function(e) { 
+            if (this.status == 200) {
+                let file = new File([this.response], 'temp');
+                let fileReader = new FileReader();
+                fileReader.addEventListener('load', function(){
+                    //do stuff with fileReader.result
+                    console.log(JSON.parse(fileReader.result));
+                });
+                fileReader.readAsText(file);
+            } 
+            }
+            xhr.send();
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+
+            const path = "user.json";
+
+            readJSON(path);
+
+        });
+        
+        
+    </script>
+
+</body>
+</html>

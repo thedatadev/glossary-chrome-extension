@@ -1,0 +1,31 @@
+{
+    "entry": {
+        "char": "",
+        "def": null
+    },
+    "children": [
+        {
+            "entry": {
+                "char": "h",
+                "def": null
+            },
+            "children": [
+                {
+                    "entry": {
+                        "char": "e",
+                        "def": null
+                    },
+                    "children": [
+                        {
+                            "entry": {
+                                "char": "y",
+                                "def": "a colloquial way of saying hello"
+                            },
+                            "children": []
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
