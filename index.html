@@ -4,46 +4,198 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Glossary demo</title>
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+    
+        #popup {
+            position: absolute;
+            top: 300px;
+            left: 300px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 6px;
+            font-size: 1.4em;
+            font-weight: bold;
+            color: rgb(55, 55, 68);
+            box-shadow: 0px 5px 4px 3px rgba(71, 71, 71, 0.219);
+            display: inline-block;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .slide-down {
+            transform: translateY(30px);
+        }
+
+        .slide-up {
+            transform: translateY(-30px);
+        }
+
+    </style>
 </head>
 <body>
 
-        <p><span>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</span> incididunt ut labore et dolore magna aliqua. Congue eu consequat ac felis donec et odio. </p>
+    <div id="popup" class="slide-up"> This popup will contain the keyword and its definition</div>
+    
+    <p>display?</p>
+    <p><span>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</span> incididunt ut labore et dolore magna aliqua. Congue eu consequat ac felis donec et odio. </p>
+    <p><span>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</span> incididunt ut labore et dolore magna aliqua. Congue eu consequat ac felis donec et odio. </p>
+    <p><span>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</span> incididunt ut labore et dolore magna aliqua. Congue eu consequat ac felis donec et odio. </p>
+    <p><span>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</span> incididunt ut labore et dolore magna aliqua. Congue eu consequat ac felis donec et odio. </p>
+    <p><span>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</span> incididunt ut labore et dolore magna aliqua. Congue eu consequat ac felis donec et odio. </p>
+    <p><span>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</span> incididunt ut labore et dolore magna aliqua. Congue eu consequat ac felis donec et odio. </p>
+    <p><span>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</span> incididunt ut labore et dolore magna aliqua. Congue eu consequat ac felis donec et odio. </p>
+    <p><span>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</span> incididunt ut labore et dolore magna aliqua. Congue eu consequat ac felis donec et odio. </p>
+    <p><span>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</span> incididunt ut labore et dolore magna aliqua. Congue eu consequat ac felis donec et odio. </p>
+    <p><span>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</span> incididunt ut labore et dolore magna aliqua. Congue eu consequat ac felis donec et odio. </p>
+    <p><span>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</span> incididunt ut labore et dolore magna aliqua. Congue eu consequat ac felis donec et odio. </p>
 
     <script>
-
+    
+        /*
         
+        TODO:
+            - study Promises, callbacks in https://stackoverflow.com/questions/14220321/how-do-i-return-the-response-from-an-asynchronous-call
+            - make the loadGlossary function return the desired value
+            - ensure that the glossary can be converted into a Trie
+            - remove the lookup method previously imported
+            - test the glossary
+        
+        */ 
+    
+        document.addEventListener("DOMContentLoaded", function(){
 
-        document.addEventListener("DOMContentLoaded", function() {
+            // -------------- Function declarations -------------
 
-            document.addEventListener("mousemove", function(e) {
+            function loadGlossary() {
+                /* Load the glossary JSON file via XHR */
+                const filepath = "./clojure/glossary.json";
+
+                let xhr = new XMLHttpRequest();
+                xhr.open('GET', filepath, true);
+                xhr.responseType = 'blob';
+                xhr.onload = function(e) { 
+                if (this.status == 200) {
+
+                        let file = new File([this.response], 'temp');
+                        let fileReader = new FileReader();
+
+                        fileReader.addEventListener('load', function(){
+                            // return JSON.parse(fileReader.result);
+                            return "Response from loadGlossary"
+                        });
+
+                        fileReader.readAsText(file);
+                    } 
+                }
+                xhr.send();
+            }
+
+            function display(word, definition, x, y) {
+                /* Displays the popup in the new location
+                   with the current keyword and its definition */
+
+                // Delta values ensures the popup always  
+                // appears under the user's cursor
+                const Ydelta = 0;
+                const Xdelta = -50;
+
+                // Reset class, text, and position
+                popup.classList.remove("slide-down");
+                popup.innerText = `${word}: ${definition}`;
+                popup.style.top = (e.clientY + Ydelta).toString() + "px";
+                popup.style.left = (e.clientX + Xdelta).toString() + "px";
+
+                // Display new popup at new location
+                setTimeout(function() {
+                    // 100ms delay required to make the transition synchronous
+                    // Otherwise, the transition will show the popup shifting
+                    // and fading in from its previous position on the screen
+                    popup.classList.add("slide-up");
+                    popup.style.opacity = 1;
+                }, 100);
+            }
+
+
+            // ------------- Trie ----------------------
+
+            function end_of_word(word, current_index) {
+                return current_index === word.length;
+            }
+
+            function current_node_contains_current_letter(word, current_index, current_node) {
+                return word[current_index] in current_node.children;
+            }
+
+            function lookup(word, glossary) {
+
+                // To keep track of the current node and letter
+                let current_node = glossary.root;
+                let current_index = 0;
+
+                // Collect results for all substrings of the word
+                // e.g. a search for 'hello' may also return the 
+                //      results for 'he' and 'hell'
+                let result_set = [];
+
+                // Traverse the Trie for as long as there are entries for each subsequent character in the word
+                while (!end_of_word(word, current_index) && current_node_contains_current_letter(word, current_index, current_node)) {
+
+                    // Update the current node
+                    current_node = current_node.children[word[current_index]];
+
+                    // Check if there is an entry stored in that node
+                    if (current_node.entry.end_of_word) {
+                        result_set.push({
+                            keyword: word.slice(0, current_index + 1),
+                            definition: current_node.entry.definition
+                        });
+                    }
+                    // Move onto the next character
+                    current_index++;
+                }
+                return result_set;
+            }
+
+            // --------- Instantiate required variables ----------
+
+            const glossary = loadGlossary();
+            console.log(glossary);
+
+            setTimeout(function() {
+                console.log(glossary);
+            }, 5000)
+
+            const popup = document.getElementById("popup");
+
+            // ------------ Register event listeners -------------
+
+            document.addEventListener("mouseup", function(e) {
                 
-                let range;
-                let textNode;
-                let offset;
-
-                // Get the character under the caret
-                if (document.caretRangeFromPoint) {
-                    range = document.caretRangeFromPoint(e.clientX, e.clientY);
-                    textNode = range.startContainer;
-                    offset = range.startOffset;
-                } else {
-                    console.log("caretRangeFromPoint is not supported on your browser");
-                    return;
+                // Get highlighted text
+                const keyword = window.getSelection().toString();
+                if (keyword.length > 0) {
+                    const entries = lookup(keyword, glossary);
+                    if (entries.length > 0) {
+                        display(keyword, "", e.clientX, e.clientY);
+                    }
                 }
-
-                // Scan to the right of the character to discover the rest of the word
-                let endOfWord = 1;
-
-                while (textNode.textContent[offset + endOfWord] != " ") {
-                    endOfWord++;
-                }
-
-                // Print out that word to the console
-                console.log(textNode.textContent.slice(offset, offset + endOfWord));
-
             });
 
+            popup.addEventListener("mouseleave", function(e) {
+
+                // Tear down current popup
+                popup.classList.remove("slide-up");
+                popup.classList.add("slide-down");
+                popup.style.opacity = 0;
+
+            });
+            
         });
 
     </script>
