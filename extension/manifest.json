@@ -1,0 +1,21 @@
+{
+    "name": "Clojure Glossary",
+    "version": "1.0",
+    "description": "Highlight Clojure keywords on a page to bring up its definition",
+    "permissions": [
+        "tabs",
+        "http://*/",
+        "https://*/"
+    ],
+    "background": {
+        "scripts": ["background.js"],
+        "persistent": false
+    },
+    "browser_action": {
+        "default_title": "Clojure Glossary"
+    },
+    "manifest_version": 2,
+    "web_accessible_resources": [
+        "glossary/trie.json"
+    ]
+}

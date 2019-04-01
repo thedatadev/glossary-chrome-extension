@@ -1,0 +1,31 @@
+#glossary-popup {
+    min-width: 300px;
+    background-color: white;
+    padding: 5px;
+    border-radius: 6px;
+    box-shadow: 0px 5px 4px 3px rgba(71, 71, 71, 0.219);
+    display: none;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#glossary-popup > ul {
+    list-style: none;
+}
+
+.glossary-entry {
+    margin: 10px auto;
+}
+
+.glossary-keyword {
+    font-weight: bold;
+    font-style: italic;
+    font-size: 20px;
+    padding: 10px 10px ;
+    border-bottom: 2px solid rgb(238, 239, 247);
+    color: rgb(55, 55, 68);
+}
+
+.glossary-definition {
+    padding: 12px;
+    color: rgb(98, 98, 109);
+}
