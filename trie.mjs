@@ -21,10 +21,6 @@ export class Trie {
         
     }
 
-    sayHey() {
-        console.log("HEYYYY!");
-    }
-    
     lookup(word) {
 
         // To keep track of the current node and letter
@@ -37,8 +33,8 @@ export class Trie {
         let result_set = [];
     
         // Traverse the Trie for as long as there are entries for each subsequent character in the word
-        while (!this.end_of_word(word, current_index) && this.current_node_contains_current_letter(word, current_index, current_node)) {
-    
+        while (!this.end_of_query_word(word, current_index) && this.current_node_contains_current_letter(word, current_index, current_node)) {
+
             // Update the current node
             current_node = current_node.children[word[current_index]];
     
@@ -57,8 +53,8 @@ export class Trie {
         return result_set;
     }
     
-    end_of_word(word, current_index) {
-        return current_index === word.length;
+    end_of_query_word(word, current_index) {
+        return current_index == word.length;
     }
     
     current_node_contains_current_letter(word, current_index, current_node) {
